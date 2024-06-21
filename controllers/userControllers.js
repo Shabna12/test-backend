@@ -47,23 +47,3 @@ exports.loginController = async(req,res) => {
         res.status(401).json(err)
     }
 }
-//list users
-exports.listUsers = async (req, res) => {
-    try {
-      const users = await users.find().select('-password');
-      res.json(users);
-    } catch (error) {
-      res.status(400).send(error.message);
-    }
-};
-  
-//get user details
-exports.getUserDetails = async (req, res) => {
-    try {
-      const user = await users.findById(req.params.id).select('-password');
-      if (!users) return res.status(404).send('User not found');
-      res.json(users);
-    } catch (error) {
-      res.status(400).send(error.message);
-    }
-};
