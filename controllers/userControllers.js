@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken')
 // for register
 exports.registerController = async(req,res) => {
     console.log("Inside regsiter function");
-    const {username, email, password, phoneNo} = req.body
-    console.log(username, email, password, phoneNo);
+    const {username, email, password} = req.body
+    console.log(username, email, password);
     try {
         //email - mongodb users
         const exisitingUser = await users.findOne({email})
@@ -15,7 +15,7 @@ exports.registerController = async(req,res) => {
         } else {
             //new user
             const newUser = new users({
-                username,email,password,phoneNo:""
+                username,email,password
             })
             // update mongodb from model
             await newUser.save()
@@ -47,3 +47,23 @@ exports.loginController = async(req,res) => {
         res.status(401).json(err)
     }
 }
+//list users
+exports.listUsers = async (req, res) => {
+    try {
+      const users = await users.find().select('-password');
+      res.json(users);
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
+};
+  
+//get user details
+exports.getUserDetails = async (req, res) => {
+    try {
+      const user = await users.findById(req.params.id).select('-password');
+      if (!users) return res.status(404).send('User not found');
+      res.json(users);
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
+};
